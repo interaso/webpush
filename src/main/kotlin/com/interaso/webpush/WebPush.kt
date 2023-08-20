@@ -19,7 +19,7 @@ public class WebPush(
         }
     }
 
-    public companion object {
+    private companion object {
         private const val DEFAULT_TTL = 28 * 24 * 60 * 60
 
         private val webPushInfo = "WebPush: info\u0000".toByteArray()
