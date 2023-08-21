@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.dokka)
     `java-library`
     `maven-publish`
 }
@@ -11,9 +12,24 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    dokkaHtmlPlugin(libs.dokka.versioning.plugin)
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 kotlin {
     jvmToolchain(11)
     explicitApi()
+}
+
+tasks {
+    named<Jar>("javadocJar") {
+        from(dokkaJavadoc)
+    }
 }
 
 publishing {
