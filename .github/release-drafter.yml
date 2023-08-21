@@ -1,0 +1,34 @@
+tag-prefix: 'v'
+tag-template: 'v$RESOLVED_VERSION'
+name-template: '$RESOLVED_VERSION'
+
+template: '$CHANGES'
+no-changes-template: 'No changes'
+category-template: '#### $TITLE'
+change-template: '- #$NUMBER - $TITLE'
+
+version-resolver:
+  default: patch
+  major:
+    labels:
+      - breaking-change
+  minor:
+    labels:
+      - feature
+
+categories:
+  - title: '🚀 Features'
+    labels:
+      - feature
+
+  - title: '💢 Fixes'
+    labels:
+      - bug
+
+  - title: '🦺 Maintenance'
+    labels:
+      - maintenance
+
+  - title: '🛠️ Dependencies'
+    labels:
+      - dependencies
