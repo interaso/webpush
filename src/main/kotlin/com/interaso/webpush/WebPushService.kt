@@ -7,8 +7,8 @@ import java.net.http.HttpResponse.*
 /**
  * Represents a service for sending web push notifications.
  *
- * @property subject the subject of the push service
- * @property vapidKeys the VapidKeys used for authentication
+ * @property subject The subject identifying the push notification sender. It must start with "mailto:" or "https://".
+ * @property vapidKeys The VapidKeys object containing the public and private keys for VAPID authentication.
  */
 public class WebPushService(
     public val subject: String,
@@ -20,7 +20,7 @@ public class WebPushService(
     /**
      * Sends a push notification using the given endpoint and credentials.
      *
-     * @param endpoint The URL endpoint that identifies the push service provider.
+     * @param endpoint The URL endpoint that identifies the push service subscription.
      * @param p256dh The Base64-encoded P256DH key for authentication with the push service provider.
      * @param auth The Base64-encoded authentication secret for the push service provider.
      * @param payload The message payload to be sent in the push notification.
@@ -46,7 +46,7 @@ public class WebPushService(
     /**
      * Sends a push notification using the given endpoint and credentials.
      *
-     * @param endpoint The URL endpoint that identifies the push service provider.
+     * @param endpoint The URL endpoint that identifies the push service subscription.
      * @param p256dh The P256DH key for authentication with the push service provider.
      * @param auth The authentication secret for the push service provider.
      * @param payload The message payload to be sent in the push notification.

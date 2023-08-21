@@ -6,8 +6,8 @@ import java.security.interfaces.*
 /**
  * Represents a web push notification request builder.
  *
- * @property subject the subject of the push service
- * @property vapidKeys the VapidKeys used for authentication
+ * @property subject The subject identifying the push notification sender. It must start with "mailto:" or "https://".
+ * @property vapidKeys The VapidKeys object containing the public and private keys for VAPID authentication.
  */
 public class WebPush(
     public val subject: String,
@@ -28,11 +28,11 @@ public class WebPush(
     }
 
     /**
-     * Generates the body of a web push message.
+     * Generates the body of request to push service provider
      *
-     * @param payload The payload to be encrypted.
-     * @param p256dh The public key of the user.
-     * @param auth The authentication secret.
+     * @param payload The message payload to be sent in the push notification.
+     * @param p256dh The Base64-encoded P256DH key for authentication with the push service provider.
+     * @param auth The Base64-encoded authentication secret for the push service provider.
      * @return The encrypted body of the web push message.
      */
     public fun getBody(payload: ByteArray, p256dh: ByteArray, auth: ByteArray): ByteArray {
@@ -59,7 +59,7 @@ public class WebPush(
     /**
      * Retrieves the headers for a given push notification configuration.
      *
-     * @param endpoint The endpoint URL.
+     * @param endpoint The URL endpoint that identifies the push service subscription.
      * @param ttl The time-to-live value for the push notification (optional).
      * @param topic The topic of the push notification (optional).
      * @param urgency The urgency level of the push notification (optional).
@@ -72,7 +72,7 @@ public class WebPush(
     /**
      * Returns the JWT audience from the specified endpoint.
      *
-     * @param endpoint The endpoint URL.
+     * @param endpoint The URL endpoint that identifies the push service subscription.
      * @return The audience extracted from the endpoint URL.
      */
     public fun getAudience(endpoint: String): String {
