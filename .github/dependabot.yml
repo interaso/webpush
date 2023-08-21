@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    open-pull-requests-limit: 30
+    directory: /
+    schedule:
+      interval: daily
+      time: '05:00'
+      timezone: 'Europe/Prague'
+    labels:
+      - dependencies
+
+  - package-ecosystem: github-actions
+    open-pull-requests-limit: 30
+    directory: /
+    schedule:
+      interval: daily
+      time: '05:00'
+      timezone: 'Europe/Prague'
+    labels:
+      - dependencies
