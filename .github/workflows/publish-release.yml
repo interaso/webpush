@@ -1,0 +1,26 @@
+name: Publish Release
+run-name: Publish Release ${{ github.ref_name }}
+
+concurrency:
+  group: release
+
+permissions:
+  contents: write
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Publish
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publishToMavenLocal
