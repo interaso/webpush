@@ -1,29 +1,16 @@
-![GitHub licence](https://img.shields.io/github/license/interaso/webpush?color=blue)
-![Maven Central version](https://img.shields.io/maven-central/v/com.interaso/webpush?color=blue)
-![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.interaso/webpush?label=snapshot&color=8A2BE2&server=https%3A%2F%2Fs01.oss.sonatype.org%2F)
+![Maven Central](https://img.shields.io/maven-central/v/com.interaso/webpush?color=_blue)
+![Sonatype Snapshots](https://img.shields.io/nexus/s/com.interaso/webpush?label=sonatype-snapshots&color=8A2BE2&server=https%3A%2F%2Fs01.oss.sonatype.org%2F)
 
 # WebPush
 
 Lightweight library for sending web push notifications with zero dependencies.
 
-This library by default uses blocking HTTP client provided in the JDK, but you can also use it only to 
+This library by default uses blocking HTTP client provided in the JDK, but you can also use it only to
 build your requests and combine it with any HTTP library that suits your needs.
-
-* [Installation](#installation)
-* [Usage](#usage)
-  * [Sending notifications](#sending-notifications)
-  * [VAPID keys](#vapid-keys)
-  * [Using custom HTTP client](#using-custom-http-client)
-* [Snapshots](#snapshots)
-* [License](#license)
 
 ## Installation
 
-Stable releases are available in Maven Central repository. 
-
-### Gradle
-
-Add the following to your `gradle.build.kts` file:
+For Gradle, add the following to your `gradle.build.kts` file:
 
 ```kotlin
 dependencies {
@@ -31,9 +18,7 @@ dependencies {
 }
 ```
 
-### Maven
-
-Add the following to the `dependencies` block of your `pom.xml` file:
+For Maven, add the following to the `dependencies` block of your `pom.xml` file:
 
 ```xml
 <dependency>
@@ -45,28 +30,48 @@ Add the following to the `dependencies` block of your `pom.xml` file:
 
 ## Usage
 
+This section provides information to help you understand how to use this library. You'll find examples and explanations
+that cover several key topics.
+
 ### Sending notifications
 
-```kotlin
-// Setup push service
-val webPushService = WebPushService(
-    subject = "https://www.example.com", // must start with "https://" or "mailto:"
-    vapidKeys = VapidKeys.generate() // see VAPID keys section for more options
-)
+The process starts with initializing the `WebPushService` with a subject (URL or `mailto:` prefixed e-mail address) 
+and a set of [VAPID keys](/vapid-keys), which are covered later in this document.
 
-// Send push notification
+```kotlin
+val webPushService = WebPushService(
+    subject = "https://example.com",
+    vapidKeys = VapidKeys.create("MIIBIjANBgkqhkiG9w0BAQEF...", "MIIEvQIBADANBgkqhkiG...")
+)
+```
+
+Once the service is set up, you're ready to send a push notification.
+
+```kotlin
 webPushService.send(
     endpoint = "https://fcm.googleapis.com/fcm/send/cI_G6sNbxMo:APA91bG...",
     p256dh = "BPzdj8OB06SepRit5FpHUsaEPfs...",
     auth = "hv2EhUZIbsWt8CJ...",
     payload = "Example Notification",
-    ttl = 60_000 , // optional (defaults to 28 days)
-    topic = "test", // optional
-    urgency = WebPush.Urgency.High // optional
+    ttl = 60_000 , // Optional (defaults to 28 days)
+    topic = "test", // Optional
+    urgency = WebPush.Urgency.High // Optional
 )
 ```
 
+These are the key parameter descriptions:
+
+- `endpoint`: The recipient of the push notification, represented by a URL.
+- `p256dh` and `auth`: Two values that are part of the push subscription and connected to a specific user.
+- `payload`: The main content of your push notification.
+- `ttl`: The duration (in milliseconds) for which the notification is valid.
+- `topic` A header that replaces any pending notifications with the same topic.
+- `urgency` A parameter determining how much of a priority the notification should have.
+
 ### VAPID keys
+
+VAPID (Voluntary Application Server Identification) keys provides a method for application servers to identify
+themselves to push services. This section primarily covers the handling of these keys.
 
 ```kotlin
 // Generate new keys
@@ -87,7 +92,7 @@ val vapidKeys = VapidKeys.create(
 // Load from file (line separated)
 val vapidKeys = VapidKeys.load(
     path = Path("path/to/vapid.keys"),
-    generateMissing = true, // if file not found, generate one and save it
+    generateMissing = true, // If file not found, generate one and save it
 )
 
 // Get application server key for JavaScript
@@ -99,6 +104,10 @@ val privateKey = vapidKeys.pkcs8PrivateKey
 ```
 
 ### Using custom HTTP client
+
+You may prefer to use a different HTTP client for reasons of performance, suspendability, or familiarity.
+The example demonstrates how to use `WebPush` class to generate request headers and the encrypted body
+and how to process the response.
 
 ```kotlin
 // Setup request builder with subject and VAPID keys
@@ -113,8 +122,8 @@ val response = customHttpClient.post(endpoint, headers, body)
 
 // Process custom response
 when (response.status) {
-    200, 201, 202 -> true // notification sent successfully
-    404, 410 -> false // subscription is expired
+    200, 201, 202 -> true // Notification sent successfully
+    404, 410 -> false // Subscription is expired
     else -> throw RuntimeException("Unexpected status code")
 }
 ```
@@ -123,9 +132,7 @@ when (response.status) {
 
 Development snapshots are available in the Sonatype snapshots repository. Make sure to include it in your repositories.
 
-### Gradle
-
-Add the following to your `gradle.build.kts` file:
+For Gradle, add the following to your `gradle.build.kts` file:
 
 ```kotlin
 repositories {
@@ -133,9 +140,7 @@ repositories {
 }
 ```
 
-### Maven
-
-Add the following to the `repositories` block of your `pom.xml` file:
+For Maven, add the following to the `repositories` block of your `pom.xml` file:
 
 ```xml
 <repository>
