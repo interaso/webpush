@@ -6,6 +6,7 @@ concurrency:
 
 permissions:
   contents: write
+  pull-requests: read
 
 on:
   push:
@@ -22,6 +23,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Draft new release
+        uses: release-drafter/release-drafter@v5
+        with:
+          disable-autolabeler: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
@@ -31,7 +39,7 @@ jobs:
       - name: Run tests
         run: xvfb-run ./gradlew test
 
-      - name: Publish to Snapshot Repository
+      - name: Publish to Snapshots Repository
         uses: gradle/gradle-build-action@v2
         env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
