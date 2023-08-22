@@ -1,0 +1,36 @@
+name: Publish Snapshot
+run-name: Publish Snapshot
+
+concurrency:
+  group: snapshot
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test
+
+      - name: Publish to Snapshot Repository
+        uses: gradle/gradle-build-action@v2
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_gpgKey: ${{ secrets.GPG_KEY }}
+          ORG_GRADLE_PROJECT_gpgPassword: ${{ secrets.GPG_PASSWORD }}
+        with:
+          arguments: publishToSonatype
