@@ -37,7 +37,7 @@ and a set of [VAPID keys](#vapid-keys), which are covered later in this document
 
 ```kotlin
 val pushService = WebPushService(
-    subject = "https://example.com", // or "mailto:example@example.com
+    subject = "https://example.com", // or "mailto:example@example.com"
     vapidKeys = VapidKeys.generate()
 )
 ```
@@ -56,7 +56,7 @@ pushService.send(
 )
 ```
 
-These are the key parameter descriptions:
+#### Parameter descriptions
 
 - `endpoint`: The recipient of the push notification, represented by a URL.
 - `p256dh` and `auth`: Two values that are part of the push subscription and connected to a specific user.
