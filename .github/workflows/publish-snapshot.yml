@@ -22,10 +22,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run tests
+      - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test
+
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
+
+      - name: Run tests
+        run: xvfb-run ./gradlew test
 
       - name: Publish to Snapshot Repository
         uses: gradle/gradle-build-action@v2
