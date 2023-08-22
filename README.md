@@ -33,20 +33,20 @@ For Maven, add the following to the `dependencies` block of your `pom.xml` file:
 ### Sending notifications
 
 The process starts with initializing the `WebPushService` with a subject (URL or `mailto:` prefixed e-mail address) 
-and a set of [VAPID keys](/vapid-keys), which are covered later in this document.
+and a set of [VAPID keys](#vapid-keys), which are covered later in this document.
 
 ```kotlin
-val webPushService = WebPushService(
-    subject = "https://example.com",
-    vapidKeys = VapidKeys.create("MIIBIjANBgkqhkiG9w0BAQEF...", "MIIEvQIBADANBgkqhkiG...")
+val pushService = WebPushService(
+    subject = "https://example.com", // or "mailto:example@example.com
+    vapidKeys = VapidKeys.generate()
 )
 ```
 
 Once the service is set up, you're ready to send a push notification.
 
 ```kotlin
-webPushService.send(
-    endpoint = "https://fcm.googleapis.com/fcm/send/cI_G6sNbxMo:APA91bG...",
+pushService.send(
+    endpoint = "https://fcm.googleapis.com/fcm/send/...",
     p256dh = "BPzdj8OB06SepRit5FpHUsaEPfs...",
     auth = "hv2EhUZIbsWt8CJ...",
     payload = "Example Notification",
