@@ -20,7 +20,7 @@ public class WebPush(
     }
 
     private companion object {
-        private const val DEFAULT_TTL = 28 * 24 * 60 * 60
+        private const val DEFAULT_TTL = 28 * 24 * 60 * 60 // 28 days
 
         private val webPushInfo = "WebPush: info\u0000".toByteArray()
         private val keyInfo = "Content-Encoding: aes128gcm\u0000".toByteArray()

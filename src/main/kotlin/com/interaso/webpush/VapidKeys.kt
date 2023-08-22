@@ -46,14 +46,14 @@ public class VapidKeys(
         }
 
         /**
-         * Loads the specified X509 public key and PKCS8 private key and returns the corresponding VapidKeys object.
+         * Decodes the specified X509 public key and PKCS8 private key and returns the corresponding VapidKeys object.
          *
          * @param x509PublicKey The X509 public key encoded as a Base64 string.
          * @param pkcs8PrivateKey The PKCS8 private key encoded as a Base64 string.
          * @return The VapidKeys object representing the loaded public and private keys.
          */
         @JvmStatic
-        public fun load(x509PublicKey: String, pkcs8PrivateKey: String): VapidKeys {
+        public fun create(x509PublicKey: String, pkcs8PrivateKey: String): VapidKeys {
             return VapidKeys(
                 generatePublicKeyFromX509(decodeBase64(x509PublicKey)),
                 generatePrivateKeyFromPkcs8(decodeBase64(pkcs8PrivateKey)),
@@ -78,7 +78,7 @@ public class VapidKeys(
             }
 
             return path.readLines().let { (x509PublicKey, pkcs8PrivateKey) ->
-                load(x509PublicKey, pkcs8PrivateKey)
+                create(x509PublicKey, pkcs8PrivateKey)
             }
         }
     }
