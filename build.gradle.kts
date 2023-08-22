@@ -48,8 +48,8 @@ signing {
     isRequired = false
     sign(publishing.publications)
     useInMemoryPgpKeys(
-        providers.gradleProperty("gpg.key").orNull,
-        providers.gradleProperty("gpg.password").orNull,
+        providers.gradleProperty("gpgKey").orNull,
+        providers.gradleProperty("gpgPassword").orNull,
     )
 }
 
@@ -58,8 +58,8 @@ nexusPublishing.repositories {
         nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
         snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 
-        username = providers.gradleProperty("sonatype.username").orNull
-        password = providers.gradleProperty("sonatype.password").orNull
+        username = providers.gradleProperty("sonatypeUsername").orNull
+        password = providers.gradleProperty("sonatypePassword").orNull
     }
 }
 
