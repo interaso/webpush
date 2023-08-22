@@ -30,9 +30,6 @@ For Maven, add the following to the `dependencies` block of your `pom.xml` file:
 
 ## Usage
 
-This section provides information to help you understand how to use this library. You'll find examples and explanations
-that cover several key topics.
-
 ### Sending notifications
 
 The process starts with initializing the `WebPushService` with a subject (URL or `mailto:` prefixed e-mail address) 
