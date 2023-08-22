@@ -1,6 +1,3 @@
-![Maven Central](https://img.shields.io/maven-central/v/com.interaso/webpush?color=_blue)
-![Sonatype Snapshots](https://img.shields.io/nexus/s/com.interaso/webpush?label=sonatype-snapshots&color=8A2BE2&server=https%3A%2F%2Fs01.oss.sonatype.org%2F)
-
 # WebPush
 
 Lightweight library for sending web push notifications with zero dependencies.
@@ -9,6 +6,10 @@ This library by default uses blocking HTTP client provided in the JDK, but you c
 build your requests and combine it with any HTTP library that suits your needs.
 
 ## Installation
+
+Stable releases are available in Maven Central repository.
+
+![Latest Maven Central version badge](https://img.shields.io/maven-central/v/com.interaso/webpush?color=blue)
 
 For Gradle, add the following to your `gradle.build.kts` file:
 
@@ -32,7 +33,7 @@ For Maven, add the following to the `dependencies` block of your `pom.xml` file:
 
 ### Sending notifications
 
-The process starts with initializing the `WebPushService` with a subject (URL or `mailto:` prefixed e-mail address) 
+The process starts with initializing the service with a subject (URL or `mailto:` prefixed e-mail address) 
 and a set of [VAPID keys](#vapid-keys), which are covered later in this document.
 
 ```kotlin
@@ -128,6 +129,8 @@ when (response.status) {
 ## Snapshots
 
 Development snapshots are available in the Sonatype snapshots repository. Make sure to include it in your repositories.
+
+![Latest snapshot version badge](https://img.shields.io/nexus/s/com.interaso/webpush?label=latest%20version&color=blue&server=https%3A%2F%2Fs01.oss.sonatype.org%2F)
 
 For Gradle, add the following to your `gradle.build.kts` file:
 
