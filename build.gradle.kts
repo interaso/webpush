@@ -30,6 +30,15 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    testImplementation(libs.ktor.server.cio)
+    testImplementation(libs.ktor.server.html.builder)
+    testImplementation(libs.slf4j.simple)
+    testImplementation(libs.playwright)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+}
+
 kotlin {
     jvmToolchain(11)
     explicitApi()
@@ -38,6 +47,11 @@ kotlin {
 java {
     withSourcesJar()
     withJavadocJar()
+}
+
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.named<Jar>("javadocJar") {
