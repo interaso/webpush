@@ -1,3 +1,5 @@
+<img src="docs/illustration.jpg" align="right">
+
 # WebPush
 
 Lightweight library for sending web push notifications with zero dependencies.
@@ -158,3 +160,5 @@ For Maven, add the following to the `repositories` block of your `pom.xml` file:
 ## License
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](/LICENSE) file for more details.
+
+Image used in this README is [Freepik](https://www.freepik.com/free-vector/appointment-booking-with-smartphone-woman_8444765.htm#query=push%20notification&position=44&from_view=search&track=ais).
