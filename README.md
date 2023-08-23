@@ -48,25 +48,23 @@ val pushService = WebPushService(
 Once the service is set up, you're ready to send a push notification.
 
 ```kotlin
-pushService.send(
-    endpoint = "https://fcm.googleapis.com/fcm/send/...",
-    p256dh = "BPzdj8OB06SepRit5FpHUsaEPfs...",
-    auth = "hv2EhUZIbsWt8CJ...",
+val subscriptionState = pushService.send(
     payload = "Example Notification",
-    ttl = 60_000 , // Optional (defaults to 28 days)
-    topic = "test", // Optional
-    urgency = WebPush.Urgency.High // Optional
+    endpoint = subscription.endpoint, // "https://fcm.googleapis.com/fcm/send/...",
+    p256dh = subscription.keys.p256dh, // "BPzdj8OB06SepRit5FpHUsaEPfs...",
+    auth = subscription.keys.auth, // "hv2EhUZIbsWt8CJ...",
 )
 ```
 
-#### Parameter descriptions
+#### Available arguments
 
-- `endpoint`: The recipient of the push notification, represented by a URL.
-- `p256dh` and `auth`: Two values that are part of the push subscription and connected to a specific user.
-- `payload`: The main content of your push notification.
-- `ttl`: The duration (in milliseconds) for which the notification is valid.
-- `topic` A header that replaces any pending notifications with the same topic.
-- `urgency` A parameter determining how much of a priority the notification should have.
+- `endpoint` - The URL endpoint that identifies the push service subscription.
+- `p256dh` - The P256DH key for authentication with the push service provider.
+- `auth` - The authentication secret for the push service provider.
+- `payload` - The message payload to be sent in the push notification.
+- `ttl` - The time-to-live value for the push notification (optional).
+- `topic` - The topic of the push notification (optional).
+- `urgency` - The urgency level of the push notification (optional).
 
 If you have set up your service worker correctly, you should see your notification popping up.
 
@@ -80,12 +78,6 @@ themselves to push services. This section primarily covers the handling of these
 ```kotlin
 // Generate new keys
 val vapidKeys = VapidKeys.generate()
-
-// Create from existing KeyPair
-val vapidKeys = VapidKeys(
-    publicKey = keyPair.public as ECPublicKey,
-    privateKey = keyPair.private as ECPrivateKey
-)
 
 // Create from Base64 encoded strings 
 val vapidKeys = VapidKeys.create(
@@ -124,12 +116,8 @@ val body = webPush.getBody(payload, p256dh, auth)
 // Use custom HTTP client to process request
 val response = customHttpClient.post(endpoint, headers, body)
 
-// Process custom response
-when (response.status) {
-    200, 201, 202 -> true // Notification sent successfully
-    404, 410 -> false // Subscription is expired
-    else -> throw RuntimeException("Unexpected status code")
-}
+// Map status code to subscription state
+val subscriptionState = webPush.getSubscriptionState(response.status)
 ```
 
 ## Snapshots

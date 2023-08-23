@@ -115,6 +115,26 @@ public class WebPush(
     }
 
     /**
+     * Returns the subscription state based on the provided status code.
+     *
+     * @param statusCode the status code received from the server
+     * @param body the response body received from the server (optional)
+     * @return the subscription state based on the provided status code
+     * @throws WebPushException if authentication failed (status code 401 or 403),
+     *                          if the service is unavailable (status code 502 or 503),
+     *                          or if an unexpected response is received
+     */
+    public fun getSubscriptionState(statusCode: Int, body: String? = null): SubscriptionState {
+        return when (statusCode) {
+            200, 201, 202 -> SubscriptionState.ACTIVE
+            404, 410 -> SubscriptionState.EXPIRED
+            401, 403 -> throw WebPushException("Authentication failed: [$statusCode] - $body")
+            502, 503 -> throw WebPushException("Service unavailable: [$statusCode] - $body")
+            else -> throw WebPushException("Unexpected response: [$statusCode] - $body")
+        }
+    }
+
+    /**
      * Represents the urgency level of push notification.
      *
      * @property headerValue The header value associated with the urgency level.
@@ -124,5 +144,13 @@ public class WebPush(
         Low("low"),
         Normal("normal"),
         High("high"),
+    }
+
+    /**
+     * Represents the possible states of a push subscription.
+     */
+    public enum class SubscriptionState {
+        ACTIVE,
+        EXPIRED,
     }
 }
