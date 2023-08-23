@@ -2,7 +2,7 @@
 
 # WebPush
 
-Lightweight library for sending web push notifications with zero dependencies.
+Lightweight Kotlin library for sending web push notifications with zero dependencies.
 
 This library by default uses blocking HTTP client provided in the JDK, but you can also use it only to
 build your requests and combine it with any HTTP library that suits your needs.
@@ -67,6 +67,10 @@ pushService.send(
 - `ttl`: The duration (in milliseconds) for which the notification is valid.
 - `topic` A header that replaces any pending notifications with the same topic.
 - `urgency` A parameter determining how much of a priority the notification should have.
+
+If you have set up your service worker correctly, you should see your notification popping up.
+
+![Notification](docs/notification.png)
 
 ### VAPID keys
 
@@ -161,4 +165,4 @@ For Maven, add the following to the `repositories` block of your `pom.xml` file:
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](/LICENSE) file for more details.
 
-Image used in this README is by [Freepik](https://www.freepik.com/free-vector/appointment-booking-with-smartphone-woman_8444765.htm#query=push%20notification&position=44&from_view=search&track=ais).
+Illustration used in this README is by [vectorjuice](https://www.freepik.com/free-vector/attention-attraction-important-announcement-warning-information-sharing-latest-news-loudspeaker-megaphone-bullhorn-with-exclamation-mark-vector-isolated-concept-metaphor-illustration_12083537.htm#query=notification&position=10&from_view=search&track=sph) on Freepik.
