@@ -155,8 +155,8 @@ This project is essentially a Kotlin adaptation of the [webpush-java](https://gi
 library. We extend our sincere gratitude to the original author for providing the foundation upon which this library is
 built.
 
+Illustration used in this README is by [vectorjuice](https://www.freepik.com/free-vector/attention-attraction-important-announcement-warning-information-sharing-latest-news-loudspeaker-megaphone-bullhorn-with-exclamation-mark-vector-isolated-concept-metaphor-illustration_12083537.htm#query=notification&position=10&from_view=search&track=sph) on Freepik.
+
 ## License
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](/LICENSE) file for more details.
-
-Illustration used in this README is by [vectorjuice](https://www.freepik.com/free-vector/attention-attraction-important-announcement-warning-information-sharing-latest-news-loudspeaker-megaphone-bullhorn-with-exclamation-mark-vector-isolated-concept-metaphor-illustration_12083537.htm#query=notification&position=10&from_view=search&track=sph) on Freepik.
