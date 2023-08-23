@@ -84,7 +84,7 @@ publishing.publications.create<MavenPublication>("release") {
     from(components["java"])
     pom {
         name = "WebPush"
-        description = "Lightweight library for sending web push notifications with zero dependencies."
+        description = "Lightweight Kotlin library for sending web push notifications with zero dependencies."
         url = "https://github.com/interaso/webpush"
         licenses {
             license {
