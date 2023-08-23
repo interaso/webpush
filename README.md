@@ -35,8 +35,9 @@ For Maven, add the following to the `dependencies` block of your `pom.xml` file:
 
 ### Sending notifications
 
-The process starts with initializing the service with a subject (URL or `mailto:` prefixed e-mail address) 
-and a set of [VAPID keys](#vapid-keys), which are covered later in this document.
+The process starts with initializing the [WebPushService](src/main/kotlin/com/interaso/webpush/WebPushService.kt) with
+a subject (URL or `mailto:` prefixed e-mail address) and a set of VAPID keys, which are covered
+[later in this document](#vapid-keys).
 
 ```kotlin
 val pushService = WebPushService(
@@ -69,7 +70,8 @@ val subscriptionState = pushService.send(
 ### VAPID keys
 
 VAPID (Voluntary Application Server Identification) keys provides a method for application servers to identify
-themselves to push services. This section primarily covers the handling of these keys.
+themselves to push services. This section covers the handling of these keys with 
+[VapidKeys](src/main/kotlin/com/interaso/webpush/VapidKeys.kt) class.
 
 ```kotlin
 // Generate new keys
@@ -98,8 +100,8 @@ val privateKey = vapidKeys.pkcs8PrivateKey
 ### Using custom HTTP client
 
 You may prefer to use a different HTTP client for reasons of performance, suspendability, or familiarity.
-The example demonstrates how to use `WebPush` class to generate request headers and the encrypted body
-and how to process the response.
+The example demonstrates how to use [WebPush](src/main/kotlin/com/interaso/webpush/WebPush.kt) class to generate
+request headers and the encrypted body and how to process the response.
 
 ```kotlin
 // Setup request builder with subject and VAPID keys
