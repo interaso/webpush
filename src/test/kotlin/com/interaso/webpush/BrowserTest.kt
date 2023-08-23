@@ -46,7 +46,7 @@ class BrowserTest {
                     val p256dh: String by params
                     val auth: String by params
 
-                    webPush.send(endpoint, p256dh, auth, notification)
+                    webPush.send(notification, endpoint, p256dh, auth)
                     call.respondText("OK")
                 }
             }
