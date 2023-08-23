@@ -149,6 +149,12 @@ For Maven, add the following to the `repositories` block of your `pom.xml` file:
 </repository>
 ```
 
+## Credit
+
+This project is essentially a Kotlin adaptation of the [webpush-java](https://github.com/web-push-libs/webpush-java)
+library. We extend our sincere gratitude to the original author for providing the foundation upon which this library is
+built.
+
 ## License
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](/LICENSE) file for more details.
