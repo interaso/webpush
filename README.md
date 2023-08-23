@@ -1,4 +1,4 @@
-<img src="docs/illustration.jpg" align="right">
+<img src="docs/illustration.jpg" align="right" width="270" height="270">
 
 # WebPush
 
