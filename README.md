@@ -152,6 +152,15 @@ For Maven, add the following to the `repositories` block of your `pom.xml` file:
 </repository>
 ```
 
+## Resources
+
+### Specifications
+
+- [Generic Event Delivery Using HTTP Push](https://tools.ietf.org/html/draft-ietf-webpush-protocol-11)
+- [Message Encryption for Web Push](https://tools.ietf.org/html/draft-ietf-webpush-encryption-08)
+- [Encrypted Content-Encoding for HTTP](https://tools.ietf.org/html/draft-ietf-httpbis-encryption-encoding-02)
+- [Voluntary Application Server Identification for Web Push](https://tools.ietf.org/html/draft-ietf-webpush-vapid-01)
+
 ## Credit
 
 This project is essentially a Kotlin adaptation of the [webpush-java](https://github.com/web-push-libs/webpush-java)
