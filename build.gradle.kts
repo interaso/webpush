@@ -88,7 +88,7 @@ nexusPublishing {
 publishing.publications.withType<MavenPublication>().all {
     pom {
         name = "WebPush"
-        description = "Lightweight Kotlin library for sending web push notifications with zero dependencies."
+        description = "Lightweight Kotlin library for sending web push notifications with zero external dependencies."
         url = "https://github.com/interaso/webpush"
         scm {
             connection = "scm:git:https://github.com/interaso/webpush.git"

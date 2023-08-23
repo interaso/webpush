@@ -2,7 +2,7 @@
 
 # WebPush
 
-Lightweight Kotlin library for sending web **push notifications** with zero dependencies.
+Lightweight Kotlin library for sending web **push notifications** with zero external dependencies.
 
 This library by default uses blocking HTTP client provided in the JDK, but you can also use it only to
 build your requests and combine it [with any HTTP library](#using-custom-http-client) that suits your needs.
