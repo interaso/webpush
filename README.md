@@ -66,10 +66,6 @@ val subscriptionState = pushService.send(
 - `topic` - The topic of the push notification (optional).
 - `urgency` - The urgency level of the push notification (optional).
 
-If you have set up your service worker correctly, you should see your notification popping up.
-
-![Notification](docs/notification.png)
-
 ### VAPID keys
 
 VAPID (Voluntary Application Server Identification) keys provides a method for application servers to identify
@@ -119,6 +115,13 @@ val response = customHttpClient.post(endpoint, headers, body)
 // Map status code to subscription state
 val subscriptionState = webPush.getSubscriptionState(response.status)
 ```
+
+## Testing
+
+In order to ensure the functionality and reliability, this library is automatically tested using local server and real
+Chromium browser. For more details see [BrowserTest](src/test/kotlin/com/interaso/webpush/BrowserTest.kt) class.
+
+![Notification](docs/notification.png)
 
 ## Snapshots
 
