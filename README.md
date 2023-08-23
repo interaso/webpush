@@ -17,7 +17,7 @@ For Gradle, add the following to your `gradle.build.kts` file:
 
 ```kotlin
 dependencies {
-    implementation("com.interaso:webpush:0.0.4")
+    implementation("com.interaso:webpush:0.0.5")
 }
 ```
 
@@ -27,7 +27,7 @@ For Maven, add the following to the `dependencies` block of your `pom.xml` file:
 <dependency>
     <groupId>com.interaso</groupId>
     <artifactId>webpush</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 
