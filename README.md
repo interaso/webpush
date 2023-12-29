@@ -77,13 +77,19 @@ themselves to push services. This section covers the handling of these keys with
 // Generate new keys
 val vapidKeys = VapidKeys.generate()
 
-// Create from Base64 encoded strings 
+// Create from Base64 encoded strings in X509 and PKCS8 formats
 val vapidKeys = VapidKeys.create(
     x509PublicKey = "MIIBIjANBgkqhkiG9w0BAQEF...",
     pkcs8PrivateKey = "MIIEvQIBADANBgkqhkiG..."
 )
 
-// Load from file (line separated)
+// Create from Base64 encoded strings of uncompressed bytes
+val vapidKeys = VapidKeys.fromUncompressedBytes(
+    publicKey = "BJwwFRoDoOx2vQPfvbeo-m1f...",
+    privateKey = "P5GjTLppISlmUyNiZqZi..."
+)
+
+// Load from file (line separated X509 and PKCS8 keys in Base64)
 val vapidKeys = VapidKeys.load(
     path = Path("path/to/vapid.keys"),
     generateMissing = true, // If file not found, generate one and save it
@@ -92,10 +98,14 @@ val vapidKeys = VapidKeys.load(
 // Get application server key for JavaScript
 val applicationServerKey = vapidKeys.applicationServerKey
 
-// Serialize to Base64 encoded strings
+// Serialize to Base64 encoded strings in X509 and PKCS8 formats
 val publicKey = vapidKeys.x509PublicKey
 val privateKey = vapidKeys.pkcs8PrivateKey
 ```
+
+> [!TIP]  
+> For using same VAPID keys format when migrating from [webpush-java](#credit) library,
+> use `VapidKeys.fromUncompressedBytes()` factory function.
 
 ### Using custom HTTP client
 

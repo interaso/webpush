@@ -61,7 +61,22 @@ public class VapidKeys(
         }
 
         /**
-         * Loads VapidKeys from a given path.
+         * Decodes the specified public key and private key from uncompressed bytes format and returns the corresponding VapidKeys object.
+         *
+         * @param publicKey The uncompressed public key bytes encoded as a Base64 string.
+         * @param privateKey The uncompressed private key bytes encoded as a Base64 string.
+         * @return The VapidKeys object representing the loaded public and private keys.
+         */
+        @JvmStatic
+        public fun fromUncompressedBytes(publicKey: String, privateKey: String): VapidKeys {
+            return VapidKeys(
+                generatePublicKeyFromUncompressedBytes(decodeBase64(publicKey)),
+                generatePrivateKeyFromUncompressedBytes(decodeBase64(privateKey)),
+            )
+        }
+
+        /**
+         * Loads VapidKeys from a given path, expects Base64 encoded keys on separate lines in X509 and PKCS8 formats.
          *
          * @param path The path to load the VapidKeys from.
          * @param generateMissing If set to true and the path does not exist, generate new VapidKeys and save them to the path.

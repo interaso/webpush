@@ -214,6 +214,18 @@ internal fun generatePublicKeyFromUncompressedBytes(bytes: ByteArray): ECPublicK
 }
 
 /**
+ * Generate an EC private key from uncompressed bytes.
+ *
+ * @param bytes The uncompressed bytes representing the private key.
+ * @return The generated EC private key.
+ */
+internal fun generatePrivateKeyFromUncompressedBytes(bytes: ByteArray): ECPrivateKey {
+    return KeyFactory.getInstance("EC").run {
+        generatePrivate(ECPrivateKeySpec(BigInteger(bytes), secp256r1parameterSpec)) as ECPrivateKey
+    }
+}
+
+/**
  * Generates a salt of the specified size.
  *
  * @param size The size of the salt to generate.
