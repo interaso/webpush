@@ -49,4 +49,4 @@ jobs:
         with:
           dependency-graph: generate-and-submit
           artifact-retention-days: 1
-          arguments: publishAllPublicationsToMavenCentralRepository
+          arguments: publishToMavenCentral
