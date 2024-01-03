@@ -23,9 +23,9 @@ jobs:
       - name: Publish to Maven Central
         uses: gradle/gradle-build-action@v2
         env:
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
-          ORG_GRADLE_PROJECT_gpgKey: ${{ secrets.GPG_KEY }}
-          ORG_GRADLE_PROJECT_gpgPassword: ${{ secrets.GPG_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSWORD }}
         with:
-          arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
+          arguments: publishAllPublicationsToMavenCentralRepository --no-configuration-cache

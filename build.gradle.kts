@@ -1,13 +1,10 @@
-import java.time.*
+import com.vanniktech.maven.publish.*
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.dokka)
-    alias(libs.plugins.nexus.publish)
     alias(libs.plugins.git.versioning)
-    `java-library`
-    `maven-publish`
-    signing
+    alias(libs.plugins.maven.publish)
 }
 
 group = "com.interaso"
@@ -26,10 +23,6 @@ gitVersioning.apply {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     testImplementation(libs.ktor.server.cio)
     testImplementation(libs.ktor.server.html.builder)
@@ -44,48 +37,13 @@ kotlin {
     explicitApi()
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
-
 tasks.test {
     useJUnitPlatform()
 }
 
-tasks.named<Jar>("javadocJar") {
-    from(tasks.dokkaJavadoc)
-}
-
-signing {
-    isRequired = false
-    sign(publishing.publications)
-    useInMemoryPgpKeys(
-        providers.gradleProperty("gpgKey").orNull,
-        providers.gradleProperty("gpgPassword").orNull,
-    )
-}
-
-publishing {
-    publications.create<MavenPublication>("release") {
-        from(components["java"])
-    }
-}
-
-nexusPublishing {
-    repositories.sonatype {
-        nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
-        snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        username = providers.gradleProperty("sonatypeUsername").orNull
-        password = providers.gradleProperty("sonatypePassword").orNull
-    }
-    transitionCheckOptions {
-        maxRetries = 10
-        delayBetween = Duration.ofSeconds(5)
-    }
-}
-
-publishing.publications.withType<MavenPublication>().all {
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.S01, true)
+    signAllPublications()
     pom {
         name = "WebPush"
         description = "Lightweight Kotlin library for sending web push notifications with zero external dependencies."
