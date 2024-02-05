@@ -6,7 +6,7 @@ git-versioning = "6.4.3"
 ktor = "2.3.8"
 slf4j = "2.0.11"
 playwright = "1.41.2"
-junit = "5.10.1"
+junit = "5.10.2"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
