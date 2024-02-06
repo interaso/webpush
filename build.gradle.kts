@@ -23,6 +23,10 @@ gitVersioning.apply {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     testImplementation(libs.ktor.server.cio)
     testImplementation(libs.ktor.server.html.builder)
