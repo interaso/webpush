@@ -1,7 +1,7 @@
 [versions]
 kotlin = "1.9.22"
 dokka = "1.9.10"
-nexus-publish = "1.3.0"
+maven-publish = "0.27.0"
 git-versioning = "6.4.3"
 ktor = "2.3.8"
 slf4j = "2.0.12"
@@ -11,7 +11,7 @@ junit = "5.10.2"
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus-publish" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
 git-versioning = { id = "me.qoomon.git-versioning", version.ref = "git-versioning" }
 
 [libraries]
