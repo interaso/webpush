@@ -21,11 +21,10 @@ private const val CURVE = "secp256r1"
  * which is also known as the P-256 curve. It is commonly used in cryptographic
  * algorithms such as the Elliptic Curve Digital Signature Algorithm (ECDSA).
  */
-private val secp256r1parameterSpec: ECParameterSpec =
-    AlgorithmParameters.getInstance("EC").run {
-        init(ECGenParameterSpec(CURVE))
-        getParameterSpec(ECParameterSpec::class.java)
-    }
+private val secp256r1parameterSpec: ECParameterSpec = AlgorithmParameters.getInstance("EC").run {
+    init(ECGenParameterSpec(CURVE))
+    getParameterSpec(ECParameterSpec::class.java)
+}
 
 /**
  * Generates a key pair using the secp256r1 elliptic curve algorithm.
