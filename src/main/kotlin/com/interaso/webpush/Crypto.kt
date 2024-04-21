@@ -10,25 +10,22 @@ import javax.crypto.spec.*
 import kotlin.math.*
 
 /**
+ * Standard name for the secp256r1 elliptic curve.
+ */
+private const val CURVE = "secp256r1"
+
+/**
  * The ECParameterSpec for the secp256r1 elliptic curve.
  *
  * This variable represents the parameters for the secp256r1 elliptic curve,
  * which is also known as the P-256 curve. It is commonly used in cryptographic
  * algorithms such as the Elliptic Curve Digital Signature Algorithm (ECDSA).
  */
-private val secp256r1parameterSpec = ECParameterSpec(
-    EllipticCurve(
-        ECFieldFp(BigInteger("FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF", 16)),
-        BigInteger("FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC", 16),
-        BigInteger("5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B", 16)
-    ),
-    ECPoint(
-        BigInteger("6B17D1F2E12C4247F8BCE6E563A440F277037D812DEB33A0F4A13945D898C296", 16),
-        BigInteger("4FE342E2FE1A7F9B8EE7EB4A7C0F9E162BCE33576B315ECECBB6406837BF51F5", 16)
-    ),
-    BigInteger("FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551", 16),
-    1,
-)
+private val secp256r1parameterSpec: ECParameterSpec =
+    AlgorithmParameters.getInstance("EC").run {
+        init(ECGenParameterSpec(CURVE))
+        getParameterSpec(ECParameterSpec::class.java)
+    }
 
 /**
  * Generates a key pair using the secp256r1 elliptic curve algorithm.
@@ -37,7 +34,7 @@ private val secp256r1parameterSpec = ECParameterSpec(
  */
 internal fun generateSecp256r1KeyPair(): KeyPair {
     return KeyPairGenerator.getInstance("EC").run {
-        initialize(ECGenParameterSpec("secp256r1"))
+        initialize(ECGenParameterSpec(CURVE))
         generateKeyPair()
     }
 }
