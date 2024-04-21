@@ -29,7 +29,8 @@ public class WebPushService(
      * @param urgency The urgency level of the push notification (optional).
      *
      * @return current state of this subscription
-     * @throws WebPushException if an unexpected status code is received from the push service.
+     * @throws WebPushStatusException if an unexpected status code is received from the push service.
+     * @throws WebPushException if an unexpected exception is caught while constructing request.
      */
     public fun send(
         payload: String,
@@ -55,7 +56,8 @@ public class WebPushService(
      * @param urgency The urgency level of the push notification (optional).
      *
      * @return current state of this subscription
-     * @throws WebPushException if an unexpected status code is received from the push service.
+     * @throws WebPushStatusException if an unexpected status code is received from the push service.
+     * @throws WebPushException if an unexpected exception is caught while constructing request.
      */
     public fun send(
         payload: ByteArray,

@@ -120,17 +120,17 @@ public class WebPush(
      * @param statusCode the status code received from the server
      * @param body the response body received from the server (optional)
      * @return the subscription state based on the provided status code
-     * @throws WebPushException if authentication failed (status code 401 or 403),
-     *                          if the service is unavailable (status code 502 or 503),
-     *                          or if an unexpected response is received
+     * @throws WebPushStatusException if authentication failed (status code 401 or 403),
+     *                                if the service is unavailable (status code 502 or 503),
+     *                                or if an unexpected response is received
      */
     public fun getSubscriptionState(statusCode: Int, body: String? = null): SubscriptionState {
         return when (statusCode) {
             200, 201, 202 -> SubscriptionState.ACTIVE
             404, 410 -> SubscriptionState.EXPIRED
-            401, 403 -> throw WebPushException("Authentication failed: [$statusCode] - $body")
-            502, 503 -> throw WebPushException("Service unavailable: [$statusCode] - $body")
-            else -> throw WebPushException("Unexpected response: [$statusCode] - $body")
+            401, 403 -> throw WebPushStatusException(statusCode, "Authentication failed: [$statusCode] - $body")
+            502, 503 -> throw WebPushStatusException(statusCode, "Service unavailable: [$statusCode] - $body")
+            else -> throw WebPushStatusException(statusCode, "Unexpected response: [$statusCode] - $body")
         }
     }
 
