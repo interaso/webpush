@@ -13,6 +13,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.future.await
 import kotlinx.html.*
 import org.junit.jupiter.api.*
 import java.nio.file.*
@@ -22,6 +23,19 @@ import kotlin.io.path.*
 class BrowserTest {
     @Test
     fun shouldReceiveNotification() {
+        setupTest { webPush, notification, endpoint, p256dh, auth ->
+            webPush.send(notification, endpoint, p256dh, auth)
+        }
+    }
+
+    @Test
+    fun shouldReceiveNotificationAsync() {
+        setupTest { webPush, notification, endpoint, p256dh, auth ->
+            webPush.sendAsync(notification, endpoint, p256dh, auth).await()
+        }
+    }
+
+    private fun setupTest(send: suspend (webPush: WebPushService, notification: String, endpoint: String, p256dh: String, auth: String) -> Unit) {
         val vapidKeys = VapidKeys.fromUncompressedBytes(
             "BJwwFRoDoOx2vQPfvbeo-m1fZZHo6lIjtyTlWHjLNSCtHuWdGryZD5xt0LeawVQq7G60ioID1sC33fEoQT8jCzg",
             "P5GjTLppISlmUyNiZqZi0HNq7GXFniAdcBECNsKBxfI",
@@ -51,7 +65,7 @@ class BrowserTest {
                     val p256dh: String by params
                     val auth: String by params
 
-                    webPush.send(notification, endpoint, p256dh, auth)
+                    send(webPush, notification, endpoint, p256dh, auth)
                     call.respondText("OK")
                 }
             }
