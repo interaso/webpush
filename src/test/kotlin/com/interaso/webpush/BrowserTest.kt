@@ -13,6 +13,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.future.await
 import kotlinx.html.*
 import org.junit.jupiter.api.*
 import java.nio.file.*
@@ -30,7 +31,7 @@ class BrowserTest {
     @Test
     fun shouldReceiveNotificationAsync() {
         setupTest { webPush, notification, endpoint, p256dh, auth ->
-            webPush.sendAsync(notification, endpoint, p256dh, auth)
+            webPush.sendAsync(notification, endpoint, p256dh, auth).await()
         }
     }
 

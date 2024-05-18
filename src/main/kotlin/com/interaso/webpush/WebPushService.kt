@@ -1,9 +1,10 @@
 package com.interaso.webpush
 
-import kotlinx.coroutines.future.await
 import java.net.*
 import java.net.http.*
 import java.net.http.HttpResponse.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Future
 
 /**
  * Represents a service for sending web push notifications.
@@ -89,7 +90,7 @@ public class WebPushService(
      * @throws WebPushStatusException if an unexpected status code is received from the push service.
      * @throws WebPushException if an unexpected exception is caught while constructing request.
      */
-    public suspend fun sendAsync(
+    public fun sendAsync(
         payload: String,
         endpoint: String,
         p256dh: String,
@@ -97,7 +98,7 @@ public class WebPushService(
         ttl: Int? = null,
         topic: String? = null,
         urgency: WebPush.Urgency? = null,
-    ): WebPush.SubscriptionState {
+    ): CompletableFuture<WebPush.SubscriptionState> {
         return sendAsync(payload.toByteArray(), endpoint, decodeBase64(p256dh), decodeBase64(auth), ttl, topic, urgency)
     }
 
@@ -116,7 +117,7 @@ public class WebPushService(
      * @throws WebPushStatusException if an unexpected status code is received from the push service.
      * @throws WebPushException if an unexpected exception is caught while constructing request.
      */
-    public suspend fun sendAsync(
+    public fun sendAsync(
         payload: ByteArray,
         endpoint: String,
         p256dh: ByteArray,
@@ -124,10 +125,10 @@ public class WebPushService(
         ttl: Int? = null,
         topic: String? = null,
         urgency: WebPush.Urgency? = null,
-    ): WebPush.SubscriptionState {
+    ): CompletableFuture<WebPush.SubscriptionState> {
         val request = getRequest(payload, endpoint, p256dh, auth, ttl, topic, urgency)
-        val response = httpClient.sendAsync(request, BodyHandlers.ofString()).await()
-        return getSubscriptionState(response)
+        val response = httpClient.sendAsync(request, BodyHandlers.ofString())
+        return response.thenApply { getSubscriptionState(it) }
     }
 
     private fun getRequest(
