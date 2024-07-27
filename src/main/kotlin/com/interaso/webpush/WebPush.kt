@@ -1,7 +1,9 @@
 package com.interaso.webpush
 
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.random.*
 import java.net.*
-import java.security.interfaces.*
 
 /**
  * Represents a web push notification request builder.
@@ -36,11 +38,24 @@ public class WebPush(
      * @return The encrypted body of the web push message.
      */
     public fun getBody(payload: ByteArray, p256dh: ByteArray, auth: ByteArray): ByteArray {
-        val userPublicKey = generatePublicKeyFromUncompressedBytes(p256dh)
-        val auxKeyPair = generateSecp256r1KeyPair()
-        val auxPublicKey = getUncompressedBytes(auxKeyPair.public as ECPublicKey)
-        val secret = generateEcdhSharedSecret(auxKeyPair.private as ECPrivateKey, userPublicKey)
-        val salt = generateSalt(16)
+        val userPublicKey = CryptographyProvider.Default
+            .get(ECDH)
+            .publicKeyDecoder(EC.Curve.P256)
+            .decodeFromBlocking(EC.PublicKey.Format.RAW, p256dh)
+
+        val auxKeyPair = CryptographyProvider.Default
+            .get(ECDH)
+            .keyPairGenerator(EC.Curve.P256)
+            .generateKeyBlocking()
+
+        val auxPublicKey = auxKeyPair.publicKey
+            .encodeToBlocking(EC.PublicKey.Format.RAW)
+
+        val secret = auxKeyPair.privateKey
+            .sharedSecretDerivation()
+            .deriveSharedSecretBlocking(userPublicKey)
+
+        val salt = CryptographyRandom.nextBytes(16)
         val secretInfo = concatBytes(webPushInfo, p256dh, auxPublicKey)
         val derivedSecret = hkdfSha256(secret, auth, secretInfo, 32)
         val derivedKey = hkdfSha256(derivedSecret, salt, keyInfo, 16)
@@ -83,7 +98,7 @@ public class WebPush(
      * Returns a JSON Web Token (JWT) for VAPID authentication.
      *
      * @param audience The audience for which the JWT is intended. You can generate one using [getAudience] function.
-     * @param expiration The expiration time of the JWT in seconds. Default value is 12 hours.
+     * @param expiration The expiration time of the JWT in seconds. The default value is 12 hours.
      * @return The generated JWT as a string.
      */
     public fun getToken(audience: String, expiration: Int = 12 * 60 * 60): String {

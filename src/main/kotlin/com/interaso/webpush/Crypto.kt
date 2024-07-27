@@ -1,81 +1,14 @@
 package com.interaso.webpush
 
-import java.math.*
-import java.security.*
-import java.security.interfaces.*
-import java.security.spec.*
-import java.util.*
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bits
+import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.symmetric.*
 import javax.crypto.*
 import javax.crypto.spec.*
+import kotlin.io.encoding.*
 import kotlin.math.*
-
-/**
- * Standard name for the secp256r1 elliptic curve.
- */
-private const val CURVE = "secp256r1"
-
-/**
- * The ECParameterSpec for the secp256r1 elliptic curve.
- *
- * This variable represents the parameters for the secp256r1 elliptic curve,
- * which is also known as the P-256 curve. It is commonly used in cryptographic
- * algorithms such as the Elliptic Curve Digital Signature Algorithm (ECDSA).
- */
-private val secp256r1parameterSpec: ECParameterSpec = AlgorithmParameters.getInstance("EC").run {
-    init(ECGenParameterSpec(CURVE))
-    getParameterSpec(ECParameterSpec::class.java)
-}
-
-/**
- * Generates a key pair using the secp256r1 elliptic curve algorithm.
- *
- * @return A key pair containing the generated public and private keys.
- */
-internal fun generateSecp256r1KeyPair(): KeyPair {
-    return KeyPairGenerator.getInstance("EC").run {
-        initialize(ECGenParameterSpec(CURVE))
-        generateKeyPair()
-    }
-}
-
-/**
- * Checks if the provided EC private key and public key form a valid key pair.
- *
- * @param privateKey The EC private key to be tested.
- * @param publicKey The EC public key to be tested.
- * @return `true` if the provided EC private key and public key form a valid key pair, `false` otherwise.
- */
-internal fun areKeysValidPair(privateKey: ECPrivateKey, publicKey: ECPublicKey): Boolean {
-    return Signature.getInstance("SHA256withECDSA").run {
-        val test = byteArrayOf(1, 2, 3)
-        initSign(privateKey)
-        update(test)
-        val signature = sign()
-        initVerify(publicKey)
-        update(test)
-        verify(signature)
-    }
-}
-
-/**
- * Generates an EC private key from a PKCS8 encoded byte array.
- *
- * @param bytes The PKCS8 encoded byte array.
- * @return The EC private key.
- */
-internal fun generatePrivateKeyFromPkcs8(bytes: ByteArray): ECPrivateKey {
-    return KeyFactory.getInstance("EC").generatePrivate(PKCS8EncodedKeySpec(bytes)) as ECPrivateKey
-}
-
-/**
- * Generates a public key from the provided X.509 encoded byte array.
- *
- * @param bytes The X.509 encoded byte array.
- * @return The EC public key generated from the provided byte array.
- */
-internal fun generatePublicKeyFromX509(bytes: ByteArray): ECPublicKey {
-    return KeyFactory.getInstance("EC").generatePublic(X509EncodedKeySpec(bytes)) as ECPublicKey
-}
 
 /**
  * Encrypts the given payload using AES-GCM with no padding.
@@ -86,24 +19,18 @@ internal fun generatePublicKeyFromX509(bytes: ByteArray): ECPublicKey {
  * @return The encrypted payload.
  */
 internal fun encryptAesGcmNoPadding(key: ByteArray, nonce: ByteArray, payload: ByteArray): ByteArray {
+    // TODO: implement using CryptographyProvider
+
+    //return CryptographyProvider.Default
+    //    .get(AES.GCM)
+    //    .keyDecoder()
+    //    .decodeFromBlocking(AES.Key.Format.RAW, key)
+    //    .cipher(128.bits)
+    //    .encryptBlocking(nonce, payload)
+
     return Cipher.getInstance("AES/GCM/NoPadding").run {
         init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, nonce))
         doFinal(payload)
-    }
-}
-
-/**
- * Generates an ECDH shared secret between the given private key and public key.
- *
- * @param privateKey The ECPrivateKey to be used for generating the shared secret.
- * @param publicKey The ECPublicKey to be used for generating the shared secret.
- * @return The generated shared secret as a byte array.
- */
-internal fun generateEcdhSharedSecret(privateKey: ECPrivateKey, publicKey: ECPublicKey): ByteArray {
-    return KeyAgreement.getInstance("ECDH").run {
-        init(privateKey)
-        doPhase(publicKey, true)
-        generateSecret()
     }
 }
 
@@ -112,7 +39,7 @@ internal fun generateEcdhSharedSecret(privateKey: ECPrivateKey, publicKey: ECPub
  *
  * @param input The input key material.
  * @param salt The optional salt value, if not provided, a zero-length array is used.
- * @param info The optional context or application specific information, if not provided, a zero-length array is used.
+ * @param info The optional context or application-specific information, if not provided, a zero-length array is used.
  * @param length The desired length of the derived key.
  * @return The derived key as a byte array.
  */
@@ -128,10 +55,12 @@ internal fun hkdfSha256(input: ByteArray, salt: ByteArray, info: ByteArray, leng
  * @return The HMAC-SHA256 hash of the given data as a byte array.
  */
 private fun hmacSha256(key: ByteArray, data: ByteArray): ByteArray {
-    return Mac.getInstance("HmacSHA256").run {
-        init(SecretKeySpec(key, "HmacSHA256"))
-        doFinal(data)
-    }
+    return CryptographyProvider.Default
+        .get(HMAC)
+        .keyDecoder(SHA256)
+        .decodeFromBlocking(HMAC.Key.Format.RAW, key)
+        .signatureGenerator()
+        .generateSignatureBlocking(data)
 }
 
 /**
@@ -143,7 +72,7 @@ private fun hmacSha256(key: ByteArray, data: ByteArray): ByteArray {
  * @param privateKey the private key used to sign the token
  * @return the generated JWT
  */
-internal fun createEs256Jwt(subject: String, audience: String, expiration: Int, privateKey: ECPrivateKey): String {
+internal fun createEs256Jwt(subject: String, audience: String, expiration: Int, privateKey: ECDSA.PrivateKey): String {
     val expiresAt = System.currentTimeMillis() / 1000 + expiration
     val payload = """{"sub":"$subject","aud":"$audience","exp":$expiresAt}"""
 
@@ -151,84 +80,13 @@ internal fun createEs256Jwt(subject: String, audience: String, expiration: Int, 
     val encodedPayload = encodeBase64(payload.toByteArray())
     val encodedToken = "$encodedHeader.$encodedPayload"
 
-    val signature = signSha256withEcdsa(privateKey, encodedToken.toByteArray())
+    val signature = privateKey
+        .signatureGenerator(SHA256, ECDSA.SignatureFormat.DER)
+        .generateSignatureBlocking(encodedToken.toByteArray())
+
     val encodedSignature = encodeBase64(convertDerToJose(signature))
 
     return "$encodedToken.$encodedSignature"
-}
-
-/**
- * Signs the given byte array using SHA256 with ECDSA algorithm.
- *
- * @param privateKey the ECPrivateKey used for signing
- * @param bytes the byte array to be signed
- * @return the signature as byte array
- */
-private fun signSha256withEcdsa(privateKey: ECPrivateKey, bytes: ByteArray): ByteArray {
-    return Signature.getInstance("SHA256withECDSA").run {
-        initSign(privateKey)
-        update(bytes)
-        sign()
-    }
-}
-
-/**
- * Converts the specified public key to uncompressed bytes format.
- *
- * @param publicKey the EC public key to be converted
- * @return the uncompressed bytes representation of the public key
- */
-internal fun getUncompressedBytes(publicKey: ECPublicKey): ByteArray {
-    val x = publicKey.w.affineX.toByteArray()
-    val y = publicKey.w.affineY.toByteArray()
-
-    val xStart = if (x.size == 33 && x[0].toInt() == 0) 1 else 0
-    val yStart = if (y.size == 33 && y[0].toInt() == 0) 1 else 0
-
-    return ByteArray(65).also { array ->
-        array[0] = 0x04
-        x.copyInto(array, 1 + 32 - (x.size - xStart), xStart, x.size)
-        y.copyInto(array, 1 + 64 - (y.size - yStart), yStart, y.size)
-    }
-}
-
-/**
- * Generate an EC public key from uncompressed bytes.
- *
- * @param bytes The uncompressed bytes representing the public key.
- * @return The generated EC public key.
- */
-internal fun generatePublicKeyFromUncompressedBytes(bytes: ByteArray): ECPublicKey {
-    val ecPoint = ECPoint(
-        BigInteger(1, bytes.copyOfRange(1, 33)),
-        BigInteger(1, bytes.copyOfRange(33, 65)),
-    )
-
-    return KeyFactory.getInstance("EC").run {
-        generatePublic(ECPublicKeySpec(ecPoint, secp256r1parameterSpec)) as ECPublicKey
-    }
-}
-
-/**
- * Generate an EC private key from uncompressed bytes.
- *
- * @param bytes The uncompressed bytes representing the private key.
- * @return The generated EC private key.
- */
-internal fun generatePrivateKeyFromUncompressedBytes(bytes: ByteArray): ECPrivateKey {
-    return KeyFactory.getInstance("EC").run {
-        generatePrivate(ECPrivateKeySpec(BigInteger(bytes), secp256r1parameterSpec)) as ECPrivateKey
-    }
-}
-
-/**
- * Generates a salt of the specified size.
- *
- * @param size The size of the salt to generate.
- * @return The generated salt as a byte array.
- */
-internal fun generateSalt(size: Int): ByteArray {
-    return SecureRandom.getSeed(size)
 }
 
 /**
@@ -237,8 +95,9 @@ internal fun generateSalt(size: Int): ByteArray {
  * @param bytes The byte array to encode.
  * @return The Base64 encoded string.
  */
+@OptIn(ExperimentalEncodingApi::class)
 internal fun encodeBase64(bytes: ByteArray): String {
-    return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes)
+    return Base64.UrlSafe.encode(bytes).trimEnd('=')
 }
 
 /**
@@ -247,8 +106,9 @@ internal fun encodeBase64(bytes: ByteArray): String {
  * @param string The Base64 encoded string to decode.
  * @return The decoded byte array.
  */
+@OptIn(ExperimentalEncodingApi::class)
 internal fun decodeBase64(string: String): ByteArray {
-    return Base64.getUrlDecoder().decode(string)
+    return Base64.UrlSafe.decode(string)
 }
 
 /**
@@ -257,7 +117,7 @@ internal fun decodeBase64(string: String): ByteArray {
  * @param der The DER-encoded signature to convert.
  * @return The JOSE-encoded signature.
  */
-internal fun convertDerToJose(der: ByteArray): ByteArray {
+private fun convertDerToJose(der: ByteArray): ByteArray {
     val numberSize = 32
     var offset = 3
     val jose = ByteArray(numberSize * 2)

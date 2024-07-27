@@ -22,10 +22,7 @@ import kotlin.io.path.*
 class BrowserTest {
     @Test
     fun shouldReceiveNotification() {
-        val vapidKeys = VapidKeys.fromUncompressedBytes(
-            "BJwwFRoDoOx2vQPfvbeo-m1fZZHo6lIjtyTlWHjLNSCtHuWdGryZD5xt0LeawVQq7G60ioID1sC33fEoQT8jCzg",
-            "P5GjTLppISlmUyNiZqZi0HNq7GXFniAdcBECNsKBxfI",
-        )
+        val vapidKeys = VapidKeys.generate()
 
         val webPush = WebPushService("mailto:oss@interaso.com", vapidKeys)
         val notification = "Test"
