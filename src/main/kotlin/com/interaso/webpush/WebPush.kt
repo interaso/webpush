@@ -62,7 +62,7 @@ public class WebPush(
             header("Authorization", "vapid t=$token, k=$key")
             header("Content-Encoding", "aes128gcm")
             header("Content-Type", "application/octet-stream")
-            header("TTL", notification.ttl)
+            header("TTL", notification.ttl.inWholeSeconds)
             header("Urgency", notification.urgency?.headerValue)
             header("Topic", notification.topic)
             setBody(body)
