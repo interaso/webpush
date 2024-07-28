@@ -25,6 +25,7 @@ gitVersioning.apply {
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
@@ -32,6 +33,14 @@ dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-core:0.4.0-SNAPSHOT")
     implementation("dev.whyoleg.cryptography:cryptography-random:0.4.0-SNAPSHOT")
     implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.4.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-serialization-asn1:0.4.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-serialization-asn1-modules:0.4.0-SNAPSHOT")
+    //implementation("dev.whyoleg.cryptography:cryptography-serialization-pem:0.4.0-SNAPSHOT")
+    //implementation("io.ktor:ktor-http:3.0.0-beta-2")
+    implementation("io.ktor:ktor-http:2.3.12")
+    implementation("io.ktor:ktor-client-core:2.3.12")
+
+    testImplementation("io.ktor:ktor-client-cio:2.3.12")
     testImplementation(libs.ktor.server.cio)
     testImplementation(libs.ktor.server.html.builder)
     testImplementation(libs.slf4j.simple)
