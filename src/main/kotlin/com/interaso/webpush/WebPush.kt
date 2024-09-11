@@ -1,7 +1,6 @@
 package com.interaso.webpush
 
 import com.interaso.webpush.utils.*
-import com.interaso.webpush.vapid.*
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.random.*
@@ -9,52 +8,39 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.sync.*
+import kotlin.io.encoding.*
 
 public class WebPush(
     private val subject: String,
-    private val vapidKeysProvider: VapidKeysProvider,
+    private val vapidKeys: VapidKeys,
     private val httpClient: HttpClient = HttpClient(),
 ) {
-    private var vapidKeys: VapidKeys? = null
-    private val mutex = Mutex()
-
     init {
         require(subject.startsWith("mailto:") || subject.startsWith("https://")) {
             "Subject must start with 'mailto:' or 'https://'"
         }
     }
 
-    public constructor(subject: String, vapidKeys: VapidKeys) : this(subject, DefaultVapidKeysProvider(vapidKeys))
-    public constructor(subject: String, publicKey: String, privateKey: String) : this(subject, StringVapidKeysProvider(publicKey, privateKey))
-
     public companion object {
         private val webPushInfo = "WebPush: info\u0000".toByteArray()
         private val keyInfo = "Content-Encoding: aes128gcm\u0000".toByteArray()
         private val nonceInfo = "Content-Encoding: nonce\u0000".toByteArray()
-
-        public var cryptographyProvider: CryptographyProvider = CryptographyProvider.Default
-    }
-
-    private suspend fun getVapidKeys(): VapidKeys {
-        return vapidKeys ?: mutex.withLock {
-            vapidKeys ?: vapidKeysProvider.get().also { vapidKeys = it }
-        }
     }
 
     public suspend fun getApplicationServerKey(): ByteArray {
-        return getVapidKeys().publicKey.encodeToByteArray(EC.PublicKey.Format.RAW)
+        return vapidKeys.publicKey.encodeToByteArray(EC.PublicKey.Format.RAW)
     }
 
+    @OptIn(ExperimentalEncodingApi::class)
     public suspend fun send(subscription: Subscription, notification: Notification): SubscriptionState {
         val token = createJwt(
             subject = subject,
             audience = Url(subscription.endpoint).protocolWithAuthority,
             expiration = 12 * 60 * 60,
-            privateKey = getVapidKeys().privateKey,
+            privateKey = vapidKeys.privateKey,
         )
 
-        val key = encodeBase64(getApplicationServerKey())
+        val key = base64.encode(getApplicationServerKey())
         val body = encryptBody(notification.payload, subscription.p256dh, subscription.auth)
 
         val response = httpClient.post(subscription.endpoint) {
@@ -80,12 +66,12 @@ public class WebPush(
 
     @OptIn(DelicateCryptographyApi::class)
     private suspend fun encryptBody(payload: ByteArray, p256dh: ByteArray, auth: ByteArray): ByteArray {
-        val userPublicKey = cryptographyProvider
+        val userPublicKey = CryptographyProvider.Default
             .get(ECDH)
             .publicKeyDecoder(EC.Curve.P256)
             .decodeFromByteArray(EC.PublicKey.Format.RAW, p256dh)
 
-        val auxKeyPair = cryptographyProvider
+        val auxKeyPair = CryptographyProvider.Default
             .get(ECDH)
             .keyPairGenerator(EC.Curve.P256)
             .generateKey()
@@ -104,7 +90,7 @@ public class WebPush(
         val derivedKey = hkdfSha256(derivedSecret, salt, keyInfo, 16)
         val derivedNonce = hkdfSha256(derivedSecret, salt, nonceInfo, 12)
 
-        val encryptedPayload = cryptographyProvider
+        val encryptedPayload = CryptographyProvider.Default
             .get(AES.GCM)
             .keyDecoder()
             .decodeFromByteArray(AES.Key.Format.RAW, derivedKey)
@@ -118,5 +104,30 @@ public class WebPush(
             auxPublicKey,
             encryptedPayload,
         )
+    }
+
+    private suspend fun hkdfSha256(input: ByteArray, salt: ByteArray, info: ByteArray, length: Int): ByteArray {
+        return hmacSha256(hmacSha256(salt, input), info + 0x01.toByte()).copyOfRange(0, length)
+    }
+
+    private suspend fun hmacSha256(key: ByteArray, data: ByteArray): ByteArray {
+        return CryptographyProvider.Default
+            .get(HMAC)
+            .keyDecoder(SHA256)
+            .decodeFromByteArray(HMAC.Key.Format.RAW, key)
+            .signatureGenerator()
+            .generateSignature(data)
+    }
+
+    private fun concatBytes(vararg arrays: ByteArray): ByteArray {
+        val result = ByteArray(arrays.sumOf { it.size })
+        var position = 0
+
+        for (array in arrays) {
+            array.copyInto(result, position)
+            position += array.size
+        }
+
+        return result
     }
 }

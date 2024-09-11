@@ -3,6 +3,7 @@ package com.interaso.webpush
 import com.microsoft.playwright.*
 import com.microsoft.playwright.assertions.*
 import com.microsoft.playwright.assertions.PlaywrightAssertions.*
+import dev.whyoleg.cryptography.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -25,8 +26,10 @@ class BrowserTest {
         runBlocking {
             val webPush = WebPush(
                 subject = "mailto:github@morki.cz",
-                publicKey = "BJwwFRoDoOx2vQPfvbeo-m1fZZHo6lIjtyTlWHjLNSCtHuWdGryZD5xt0LeawVQq7G60ioID1sC33fEoQT8jCzg",
-                privateKey = "P5GjTLppISlmUyNiZqZi0HNq7GXFniAdcBECNsKBxfI",
+                VapidKeys.fromBase64(
+                    publicKey = "BJwwFRoDoOx2vQPfvbeo-m1fZZHo6lIjtyTlWHjLNSCtHuWdGryZD5xt0LeawVQq7G60ioID1sC33fEoQT8jCzg",
+                    privateKey = "P5GjTLppISlmUyNiZqZi0HNq7GXFniAdcBECNsKBxfI",
+                )
             )
 
             val data = "Test"

@@ -1,21 +1,23 @@
 package com.interaso.webpush.utils
 
 import dev.whyoleg.cryptography.algorithms.*
+import kotlin.io.encoding.*
 import kotlin.math.*
 
+@OptIn(ExperimentalEncodingApi::class)
 internal suspend fun createJwt(subject: String, audience: String, expiration: Int, privateKey: ECDSA.PrivateKey): String {
     val expiresAt = System.currentTimeMillis() / 1000 + expiration
     val payload = """{"sub":"$subject","aud":"$audience","exp":$expiresAt}"""
 
-    val encodedHeader = encodeBase64("""{"alg":"ES256","typ":"JWT"}""".toByteArray())
-    val encodedPayload = encodeBase64(payload.toByteArray())
+    val encodedHeader = base64.encode("""{"alg":"ES256","typ":"JWT"}""".toByteArray())
+    val encodedPayload = base64.encode(payload.toByteArray())
     val encodedToken = "$encodedHeader.$encodedPayload"
 
     val signature = privateKey
         .signatureGenerator(SHA256, ECDSA.SignatureFormat.DER)
         .generateSignature(encodedToken.toByteArray())
 
-    val encodedSignature = encodeBase64(convertDerToJose(signature))
+    val encodedSignature = base64.encode(convertDerToJose(signature))
 
     return "$encodedToken.$encodedSignature"
 }
