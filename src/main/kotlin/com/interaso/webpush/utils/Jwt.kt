@@ -1,7 +1,6 @@
 package com.interaso.webpush.utils
 
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.*
 import kotlin.math.*
 
 internal suspend fun createJwt(subject: String, audience: String, expiration: Int, privateKey: ECDSA.PrivateKey): String {

@@ -1,8 +1,8 @@
 package com.interaso.webpush.vapid
 
 import com.interaso.webpush.*
-import com.interaso.webpush.utils.encodeBase64
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import com.interaso.webpush.utils.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import kotlinx.serialization.*
@@ -23,13 +23,13 @@ public data class VapidKeys(
 }
 
 public suspend fun VapidKeys.exportPublicKey(): String {
-    return encodeBase64(publicKey.encodeTo(EC.PublicKey.Format.RAW))
+    return encodeBase64(publicKey.encodeToByteArray(EC.PublicKey.Format.RAW))
 }
 
 public suspend fun VapidKeys.exportPrivateKey(): String {
     return privateKey
-        .encodeTo(EC.PrivateKey.Format.DER.SEC1)
-        .let { DER.decodeFromByteArray<EcPrivateKey>(it) }
+        .encodeToByteArray(EC.PrivateKey.Format.DER.SEC1)
+        .let { Der.decodeFromByteArray<EcPrivateKey>(it) }
         .privateKey
         .let { encodeBase64(it) }
 }

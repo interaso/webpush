@@ -1,8 +1,8 @@
 package com.interaso.webpush.vapid
 
 import com.interaso.webpush.*
-import com.interaso.webpush.utils.decodeBase64
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import com.interaso.webpush.utils.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import kotlinx.serialization.*
@@ -25,14 +25,14 @@ public class StringVapidKeysProvider(
         val decodedPublicKey = WebPush.cryptographyProvider
             .get(ECDSA)
             .publicKeyDecoder(EC.Curve.P256)
-            .decodeFrom(EC.PublicKey.Format.RAW, decodeBase64(publicKey))
+            .decodeFromByteArray(EC.PublicKey.Format.RAW, decodeBase64(publicKey))
 
-        val derPrivateKey = DER.encodeToByteArray(EcPrivateKey(1, decodeBase64(privateKey), EcParameters(ObjectIdentifier.secp256r1)))
+        val derPrivateKey = Der.encodeToByteArray(EcPrivateKey(1, decodeBase64(privateKey), EcParameters(ObjectIdentifier.secp256r1)))
 
         val decodedPrivateKey = WebPush.cryptographyProvider
             .get(ECDSA)
             .privateKeyDecoder(EC.Curve.P256)
-            .decodeFrom(EC.PrivateKey.Format.DER.SEC1, derPrivateKey)
+            .decodeFromByteArray(EC.PrivateKey.Format.DER.SEC1, derPrivateKey)
 
         return VapidKeys(decodedPublicKey, decodedPrivateKey)
     }

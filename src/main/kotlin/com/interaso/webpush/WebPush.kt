@@ -3,8 +3,7 @@ package com.interaso.webpush
 import com.interaso.webpush.utils.*
 import com.interaso.webpush.vapid.*
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.random.*
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -44,7 +43,7 @@ public class WebPush(
     }
 
     public suspend fun getApplicationServerKey(): ByteArray {
-        return getVapidKeys().publicKey.encodeTo(EC.PublicKey.Format.RAW)
+        return getVapidKeys().publicKey.encodeToByteArray(EC.PublicKey.Format.RAW)
     }
 
     public suspend fun send(subscription: Subscription, notification: Notification): SubscriptionState {
@@ -84,7 +83,7 @@ public class WebPush(
         val userPublicKey = cryptographyProvider
             .get(ECDH)
             .publicKeyDecoder(EC.Curve.P256)
-            .decodeFrom(EC.PublicKey.Format.RAW, p256dh)
+            .decodeFromByteArray(EC.PublicKey.Format.RAW, p256dh)
 
         val auxKeyPair = cryptographyProvider
             .get(ECDH)
@@ -92,11 +91,12 @@ public class WebPush(
             .generateKey()
 
         val auxPublicKey = auxKeyPair.publicKey
-            .encodeTo(EC.PublicKey.Format.RAW)
+            .encodeToByteArray(EC.PublicKey.Format.RAW)
 
         val secret = auxKeyPair.privateKey
-            .sharedSecretDerivation()
-            .deriveSharedSecret(userPublicKey)
+            .sharedSecretGenerator()
+            .generateSharedSecret(userPublicKey)
+            .toByteArray()
 
         val salt = CryptographyRandom.nextBytes(16)
         val secretInfo = concatBytes(webPushInfo, p256dh, auxPublicKey)
@@ -107,7 +107,7 @@ public class WebPush(
         val encryptedPayload = cryptographyProvider
             .get(AES.GCM)
             .keyDecoder()
-            .decodeFrom(AES.Key.Format.RAW, derivedKey)
+            .decodeFromByteArray(AES.Key.Format.RAW, derivedKey)
             .cipher()
             .encrypt(derivedNonce, payload + byteArrayOf(2), null)
 
