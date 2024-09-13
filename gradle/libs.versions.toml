@@ -5,7 +5,7 @@ maven-publish = "0.29.0"
 git-versioning = "6.4.4"
 ktor = "2.3.12"
 slf4j = "2.0.16"
-playwright = "1.46.0"
+playwright = "1.47.0"
 junit = "5.11.0"
 
 [plugins]
