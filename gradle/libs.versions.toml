@@ -4,7 +4,7 @@ dokka = "1.9.20"
 maven-publish = "0.30.0"
 git-versioning = "6.4.4"
 ktor = "2.3.12"
-slf4j = "2.0.16"
+slf4j = "2.0.17"
 playwright = "1.50.0"
 junit = "5.12.0"
 
