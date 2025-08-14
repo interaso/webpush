@@ -27,7 +27,7 @@ class BrowserTest {
             "P5GjTLppISlmUyNiZqZi0HNq7GXFniAdcBECNsKBxfI",
         )
 
-        val webPush = WebPushService("mailto:oss@interaso.com", vapidKeys)
+        val webPush = JdkHttpClientWebPushService("mailto:oss@interaso.com", vapidKeys)
         val notification = "Test"
 
         val server = embeddedServer(CIO, port = 0) {
@@ -51,7 +51,7 @@ class BrowserTest {
                     val p256dh: String by params
                     val auth: String by params
 
-                    webPush.send(notification, endpoint, p256dh, auth)
+                    webPush.send(Notification(notification, endpoint, p256dh, auth))
                     call.respondText("OK")
                 }
             }

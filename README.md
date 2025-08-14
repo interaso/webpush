@@ -49,15 +49,15 @@ val pushService = WebPushService(
 Once the service is set up, you're ready to send a push notification.
 
 ```kotlin
-val subscriptionState = pushService.send(
+val subscriptionState = pushService.send(Notification(
     payload = "Example Notification",
     endpoint = subscription.endpoint, // "https://fcm.googleapis.com/fcm/send/...",
     p256dh = subscription.keys.p256dh, // "BPzdj8OB06SepRit5FpHUsaEPfs...",
     auth = subscription.keys.auth, // "hv2EhUZIbsWt8CJ...",
-)
+))
 ```
 
-#### Available arguments
+#### Available `Notification` constructor arguments
 
 - `endpoint` - The URL endpoint that identifies the push service subscription.
 - `p256dh` - The P256DH key for authentication with the push service provider.
