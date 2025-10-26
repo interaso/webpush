@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 dokka = "2.1.0"
 maven-publish = "0.34.0"
 git-versioning = "6.4.4"
