@@ -217,7 +217,7 @@ internal fun generatePublicKeyFromUncompressedBytes(bytes: ByteArray): ECPublicK
  */
 internal fun generatePrivateKeyFromUncompressedBytes(bytes: ByteArray): ECPrivateKey {
     return KeyFactory.getInstance("EC").run {
-        generatePrivate(ECPrivateKeySpec(BigInteger(bytes), secp256r1parameterSpec)) as ECPrivateKey
+        generatePrivate(ECPrivateKeySpec(BigInteger(1, bytes), secp256r1parameterSpec)) as ECPrivateKey
     }
 }
 
