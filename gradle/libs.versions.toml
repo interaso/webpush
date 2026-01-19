@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.3.0"
 dokka = "2.1.0"
-maven-publish = "0.35.0"
+maven-publish = "0.36.0"
 git-versioning = "6.4.4"
 ktor = "3.3.3"
 slf4j = "2.0.17"
