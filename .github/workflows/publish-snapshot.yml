@@ -40,13 +40,9 @@ jobs:
         run: xvfb-run ./gradlew test
 
       - name: Publish to Snapshots Repository
-        uses: gradle/actions/setup-gradle@v5
+        run: ./gradlew publishToMavenCentral
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSWORD }}
-        with:
-          dependency-graph: generate-and-submit
-          artifact-retention-days: 1
-          arguments: publishToMavenCentral
