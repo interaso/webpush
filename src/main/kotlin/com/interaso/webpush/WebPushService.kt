@@ -1,8 +1,9 @@
 package com.interaso.webpush
 
-import java.net.*
-import java.net.http.*
-import java.net.http.HttpResponse.*
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse.BodyHandlers
 
 /**
  * Represents a service for sending web push notifications.

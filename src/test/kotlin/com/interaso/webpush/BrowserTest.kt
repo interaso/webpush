@@ -1,22 +1,30 @@
 package com.interaso.webpush
 
-import com.microsoft.playwright.*
-import com.microsoft.playwright.assertions.*
-import com.microsoft.playwright.assertions.PlaywrightAssertions.*
-import io.ktor.server.application.*
-import io.ktor.server.cio.*
-import io.ktor.server.engine.*
-import io.ktor.server.html.*
-import io.ktor.server.http.content.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.util.*
-import kotlinx.coroutines.*
-import kotlinx.html.*
-import org.junit.jupiter.api.*
-import java.nio.file.*
-import kotlin.io.path.*
+import com.microsoft.playwright.BrowserType
+import com.microsoft.playwright.Page
+import com.microsoft.playwright.Playwright
+import com.microsoft.playwright.assertions.LocatorAssertions
+import com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat
+import io.ktor.server.cio.CIO
+import io.ktor.server.engine.EmbeddedServer
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.html.respondHtml
+import io.ktor.server.http.content.staticResources
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.response.respondBytes
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.routing
+import io.ktor.server.util.getValue
+import java.nio.file.Files
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.deleteRecursively
+import kotlinx.coroutines.runBlocking
+import kotlinx.html.body
+import kotlinx.html.head
+import kotlinx.html.script
+import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalPathApi::class)
 class BrowserTest {
@@ -90,10 +98,10 @@ class BrowserTest {
         }
     }
 
-    private fun startServer(server: ApplicationEngine, block: (Int) -> Unit) {
+    private fun startServer(server: EmbeddedServer<*, *>, block: (Int) -> Unit) {
         try {
             server.start()
-            block(runBlocking { server.resolvedConnectors().first().port })
+            block(runBlocking { server.engine.resolvedConnectors().first().port })
         } finally {
             server.stop()
         }

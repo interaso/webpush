@@ -1,7 +1,8 @@
 package com.interaso.webpush
 
-import java.net.*
-import java.security.interfaces.*
+import java.net.URI
+import java.security.interfaces.ECPrivateKey
+import java.security.interfaces.ECPublicKey
 
 /**
  * Represents a web push notification request builder.

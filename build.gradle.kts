@@ -1,5 +1,3 @@
-import com.vanniktech.maven.publish.*
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.dokka)
@@ -46,7 +44,7 @@ tasks.test {
 }
 
 mavenPublishing {
-    publishToMavenCentral(SonatypeHost.S01, true)
+    publishToMavenCentral()
     signAllPublications()
     pom {
         name = "WebPush"
