@@ -125,6 +125,7 @@ public class WebPush(
      *                                if the service is unavailable (status code 502 or 503),
      *                                or if an unexpected response is received
      */
+    @Throws(WebPushStatusException::class)
     public fun getSubscriptionState(statusCode: Int, body: String? = null): SubscriptionState {
         return when (statusCode) {
             200, 201, 202 -> SubscriptionState.ACTIVE
