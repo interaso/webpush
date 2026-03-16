@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: Draft new release
-        uses: release-drafter/release-drafter@v6
+        uses: release-drafter/release-drafter@v7
         with:
           disable-autolabeler: true
         env:
