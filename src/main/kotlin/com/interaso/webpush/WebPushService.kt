@@ -33,6 +33,7 @@ public class WebPushService(
      * @throws WebPushStatusException if an unexpected status code is received from the push service.
      * @throws WebPushException if an unexpected exception is caught while constructing request.
      */
+    @Throws(WebPushStatusException::class, WebPushException::class)
     public fun send(
         payload: String,
         endpoint: String,
@@ -60,6 +61,7 @@ public class WebPushService(
      * @throws WebPushStatusException if an unexpected status code is received from the push service.
      * @throws WebPushException if an unexpected exception is caught while constructing request.
      */
+    @Throws(WebPushStatusException::class, WebPushException::class)
     public fun send(
         payload: ByteArray,
         endpoint: String,
